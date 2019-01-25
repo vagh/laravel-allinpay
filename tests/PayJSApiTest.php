@@ -17,9 +17,11 @@ class PayJSApiTest extends TestCase
      * 测试错误参数
      * @author yuzhihao <yu@wowphp.com>
      * @since 2019-01-25
+     * @throws HttpException
      * @throws InvalidArgumentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testGetPayJSApiWithInvalidType()
+    public function testGetPayJSApiWithInvalidConfig()
     {
         $config = [
             'app_id'      => 'app_id',
@@ -28,11 +30,14 @@ class PayJSApiTest extends TestCase
         ];
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Config Key:app_version MUST set or can\'t be empty.');
+        $this->expectExceptionMessage('Param Key:app_version MUST set or can\'t be empty.');
 
         $pay = new AllInPay($config);
 
-        $pay->payJSApi($config);
+        $params = [];
+
+        $pay->payJSApi($params);
+
         $this->fail('Failed to assert getPayJSApi throw exception with invalid argument.');
     }
 
@@ -63,7 +68,13 @@ class PayJSApiTest extends TestCase
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('request timeout');
 
-        $pay->payJSApi($config);
+        $params = [
+            'open_id'    => 'hjewiopchxnpw0ewfhjwe-dewiod',
+            'notify_url' => 'http://test.com',
+            'app_id'     => '2894723979'
+        ];
+
+        $pay->payJSApi($params);
     }
 
     /**
@@ -90,6 +101,12 @@ class PayJSApiTest extends TestCase
         $pay = Mockery::mock(AllInPay::class, $config)->makePartial();
         $pay->allows()->getHttpClient()->andReturn($client);
 
-        $this->assertSame(['success' => true], $pay->payJSApi($config));
+        $params = [
+            'open_id'    => 'hjewiopchxnpw0ewfhjwe-dewiod',
+            'notify_url' => 'http://test.com',
+            'app_id'     => '2894723979'
+        ];
+
+        $this->assertSame(['success' => true], $pay->payJSApi($params));
     }
 }
