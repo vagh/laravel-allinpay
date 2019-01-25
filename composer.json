@@ -17,5 +17,12 @@
         "psr-4": {
             "Vagh\\LaravelAllInPay\\": "src"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vagh\\LaravelAllInPay\\ServiceProvider"
+            ]
+        }
     }
 }

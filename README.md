@@ -11,6 +11,14 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ## Usage
 
+在 Laravel 环境中这样使用：
+
+```bash
+TODO
+```
+
+不在 Laravel 环境下可以这样使用：
+
 ```php
 <?php
 
