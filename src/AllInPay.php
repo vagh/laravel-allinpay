@@ -30,15 +30,35 @@ class AllInPay
         $this->is_test = !!!$config['is_test'];
     }
 
+    /**
+     * 微信 JS SDK 支付
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@wowphp.com>
+     * @since 2019-01-25
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function payJSApi($params)
     {
+        // 验证必传参数
+        $must_set = [
+            'open_id',
+            'notify_url',
+            'app_id'
+        ];
+
+        RequestTools::checkMustSetArgs($must_set, $params);
+
         // 转换不规则的命名
         $params_translate = [
             'amount'       => 'trxamt',
             'out_trade_no' => 'reqsn',
             'valid_time'   => 'validtime',
             'true_name'    => 'truename',
-            'id_card_no'   => 'idno'
+            'id_card_no'   => 'idno',
+            'open_id'      => 'acct'
         ];
         foreach ($params_translate as $key => $item) {
             if (isset($params[$key])) {
@@ -46,6 +66,9 @@ class AllInPay
                 unset($params[$key]);
             }
         }
+
+        // 规定请求方式是微信JS支付
+        $params['paytype'] = 'W02';
 
         return $this->requestApi(self::TEST_PAY_API_URL, $params);
     }
@@ -72,6 +95,10 @@ class AllInPay
      */
     public function requestApi($url, $params)
     {
+        $params["cusid"] = $this->config['cus_id'];
+        $params["appid"] = $this->config['app_id'];
+        $params["version"] = $this->config['app_version'];
+
         // 计算签名
         $params["sign"] = RequestTools::createSign($params, $this->config['app_id']);
         try {
@@ -102,11 +129,7 @@ class AllInPay
             'is_test'
         ];
 
-        foreach ($param_must_set as $item) {
-            if (!isset($config[$item]) || empty($config[$item])) {
-                throw new InvalidArgumentException('Config Key:'.$item.' MUST set or can\'t be empty.');
-            }
-        }
+        RequestTools::checkMustSetArgs($param_must_set, $config);
     }
 
 }
