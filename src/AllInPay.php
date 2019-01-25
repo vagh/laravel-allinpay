@@ -1,0 +1,112 @@
+<?php
+
+namespace Vagh\LaravelAllInPay;
+
+use GuzzleHttp\Client;
+use Exception;
+use Vagh\LaravelAllInPay\Exceptions\HttpException;
+use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
+
+class AllInPay
+{
+    protected $config;
+    protected $guzzleOptions = [];
+    protected $is_test = false;
+
+    const PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/pay';
+    const TEST_PAY_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/pay';
+
+    /**
+     * AllInPay constructor.
+     * @param array $config
+     * @throws InvalidArgumentException
+     */
+    public function __construct(array $config)
+    {
+        // 检查必要的配置参数
+        $this->checkConfig($config);
+
+        $this->config = $config;
+        $this->is_test = !!!$config['is_test'];
+    }
+
+    public function payJSApi($params)
+    {
+        // 转换不规则的命名
+        $params_translate = [
+            'amount'       => 'trxamt',
+            'out_trade_no' => 'reqsn',
+            'valid_time'   => 'validtime',
+            'true_name'    => 'truename',
+            'id_card_no'   => 'idno'
+        ];
+        foreach ($params_translate as $key => $item) {
+            if (isset($params[$key])) {
+                $params[$item] = $params[$key];
+                unset($params[$key]);
+            }
+        }
+
+        return $this->requestApi(self::TEST_PAY_API_URL, $params);
+    }
+
+    public function getHttpClient()
+    {
+        return new Client($this->guzzleOptions);
+    }
+
+    public function setGuzzleOptions(array $options)
+    {
+        $this->guzzleOptions = $options;
+    }
+
+    /**
+     * 发送一个调用 Api Http 的请求
+     * @param $url
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@wowphp.com>
+     * @since 2019-01-25
+     * @throws HttpException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function requestApi($url, $params)
+    {
+        // 计算签名
+        $params["sign"] = RequestTools::createSign($params, $this->config['app_id']);
+        try {
+            $response = $this->getHttpClient()->request('POST', $url, [
+                'form_params' => $params
+            ])->getBody()->getContents();
+
+            return \json_decode($response, true);
+
+        } catch (Exception $e) {
+            throw new HttpException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * 检查必要的参数配置
+     * @param array $config
+     * @author yuzhihao <yu@wowphp.com>
+     * @since 2019-01-25
+     * @throws InvalidArgumentException
+     */
+    private function checkConfig(array $config)
+    {
+        $param_must_set = [
+            'app_id',
+            'cus_id',
+            'app_version',
+            'is_test'
+        ];
+
+        foreach ($param_must_set as $item) {
+            if (!isset($config[$item]) || empty($config[$item])) {
+                throw new InvalidArgumentException('Config Key:'.$item.' MUST set or can\'t be empty.');
+            }
+        }
+    }
+
+}

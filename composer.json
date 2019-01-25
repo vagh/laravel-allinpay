@@ -1,0 +1,21 @@
+{
+    "name": "vagh\/laravel-allinpay",
+    "description": "An Allinpay(Tonglian) PHP SDK For Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "VAGH",
+            "email": "yu@vagh.cn"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "phpunit/phpunit": "^7.5",
+        "mockery/mockery": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vagh\\LaravelAllInPay\\": "src"
+        }
+    }
+}
