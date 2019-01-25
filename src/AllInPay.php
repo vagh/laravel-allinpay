@@ -70,7 +70,13 @@ class AllInPay
         // 规定请求方式是微信JS支付
         $params['paytype'] = 'W02';
 
-        return $this->requestApi(self::TEST_PAY_API_URL, $params);
+        if ($this->is_test) {
+            $api_url = self::TEST_PAY_API_URL;
+        } else {
+            $api_url = self::PAY_API_URL;
+        }
+
+        return $this->requestApi($api_url, $params);
     }
 
     public function getHttpClient()
