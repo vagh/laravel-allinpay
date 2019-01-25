@@ -13,33 +13,33 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ```php
 <?php
-require __DIR__ .'/vendor/autoload.php';
+
+require __DIR__ . '/vendor/autoload.php';
 
 use Vagh\LaravelAllInPay\AllInPay;
 
 $config = [
-	'app_id' => '00000051',
-    'cus_id' => '990440148166000',
+    'app_id'      => '00000051',
+    'cus_id'      => '990440148166000',
     'app_version' => '11',
-    'is_test' => true
+    'is_test'     => true
 ];
 
 $pay = new AllInPay($config);
 
 try {
+    $params = [
+        'trxamt'       => '10',
+        'out_trade_no' => 'CJXEWIOJOIDUXOUWOEICXNUWEO',
+        'open_id'      => 'oTod4wA_AgM40UV2uQ9KJ-sgGmgU',
+        'notify_url'   => 'http://test.com',
+        'app_id'       => '748923478923'
+    ];
 
-	$params = [
-		'trxamt' => '10',
-		'out_trade_no' => 'CJXEWIOJOIDUXOUWOEICXNUWEO',
-		'open_id' => 'oTod4wA_AgM40UV2uQ9KJ-sgGmgU',
-		'notify_url' => 'http://test.com',
-		'app_id' => '748923478923'
-	];
-	
-	$result = $pay->payJSApi($params);
+    $result = $pay->payJSApi($params);
 
 } catch (Exception $e) {
-	var_dump($e->getMessage());
+    var_dump($e->getMessage());
 }
 ```
 
