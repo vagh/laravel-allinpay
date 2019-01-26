@@ -32,12 +32,16 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ```php
 // 依赖注入
+use Vagh\LaravelAllInPay\AllInPay;
+
 public function edit(AllInPay $pay) 
 {
     $params = []; // 请参照文档填写参数
     $response = $pay->payJSApi($params);
 }
+```
 
+```php
 // 服务名访问
 public function edit() 
 {
