@@ -32,12 +32,42 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ```php
 // 依赖注入
-use Vagh\LaravelAllInPay\AllInPay;
+use Vagh\LaravelAllInPay\AllInPay as TongLianPay;
+use Vagh\LaravelAllInPay\Exceptions\Exception;
+use Vagh\LaravelAllInPay\Exceptions\HttpException;
+use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
+use Vagh\LaravelAllInPay\Exceptions\ServiceException;
 
-public function edit(AllInPay $pay) 
+protected $pay_sdk;
+
+public function __construct(TongLianPay $pay_sdk)
 {
-    $params = []; // 请参照文档填写参数
-    $response = $pay->payJSApi($params);
+    $this->pay_sdk = $pay_sdk;
+}
+
+public function createOrder()
+{
+    try {
+        $params = [];
+        $result = $this->pay_sdk->payJSApi($params);
+
+        var_dump($result);exit;
+    } catch (Exception $e) {
+
+        $message = '未知错误：'.$e->getMessage();
+
+        if ($e instanceof HttpException) {
+            $message = '请求接口失败：'.$e->getMessage();
+        }
+        if ($e instanceof InvalidArgumentException) {
+            $message = '接口参数错误：'.$e->getMessage();
+        }
+        if ($e instanceof ServiceException) {
+            $message = '业务处理错误：'.$e->getMessage();
+        }
+
+        throw new \Exception($message, $e->getCode());
+    }
 }
 ```
 
