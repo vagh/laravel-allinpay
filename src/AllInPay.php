@@ -16,6 +16,9 @@ class AllInPay
     const PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/pay';
     const TEST_PAY_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/pay';
 
+    const REFUND_PAY_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/refund';
+    const REFUND_PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/refund';
+
     /**
      * AllInPay constructor.
      * @param array $config
@@ -46,7 +49,9 @@ class AllInPay
         $must_set = [
             'open_id',
             'notify_url',
-            'app_id'
+            'app_id',
+            'amount',
+            'out_trade_no'
         ];
 
         RequestTools::checkMustSetArgs($must_set, $params);
@@ -60,12 +65,7 @@ class AllInPay
             'id_card_no'   => 'idno',
             'open_id'      => 'acct'
         ];
-        foreach ($params_translate as $key => $item) {
-            if (isset($params[$key])) {
-                $params[$item] = $params[$key];
-                unset($params[$key]);
-            }
-        }
+        $params = RequestTools::translateParams($params_translate, $params);
 
         // 规定请求方式是微信JS支付
         $params['paytype'] = 'W02';
@@ -78,6 +78,45 @@ class AllInPay
 
         return $this->requestApi($api_url, $params);
     }
+
+    /**
+     * 交易退款
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@wowphp.com>
+     * @since 2019-01-26
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refundPay($params)
+    {
+        // 验证必传参数
+        $must_set = [
+            'order_history_id', // 原交易流水号(通联下单后接口返回的流水号)
+            'amount', // 退款金额
+            'out_trade_no' // 商户订单号
+        ];
+
+        RequestTools::checkMustSetArgs($must_set, $params);
+
+        // 转换不规则的命名
+        $params_translate = [
+            'amount'           => 'trxamt',
+            'out_trade_no'     => 'reqsn',
+            'order_history_id' => 'oldtrxid'
+        ];
+        $params = RequestTools::translateParams($params_translate, $params);
+
+        if ($this->is_test) {
+            $api_url = self::REFUND_PAY_TEST_API_URL;
+        } else {
+            $api_url = self::REFUND_PAY_API_URL;
+        }
+
+        return $this->requestApi($api_url, $params);
+    }
+
 
     public function getHttpClient()
     {

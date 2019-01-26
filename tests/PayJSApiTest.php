@@ -13,6 +13,14 @@ use Mockery;
 
 class PayJSApiTest extends TestCase
 {
+    private $post_params = [
+        'open_id'      => 'XJIOWEJCOIEJWOCIJO',
+        'notify_url'   => 'http://test.com',
+        'app_id'       => '2894723979',
+        'amount'       => 300,
+        'out_trade_no' => 'XJKIOEWJXIOEJCOIJCOI'
+    ];
+
     /**
      * 测试错误参数
      * @author yuzhihao <yu@wowphp.com>
@@ -68,13 +76,7 @@ class PayJSApiTest extends TestCase
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('request timeout');
 
-        $params = [
-            'open_id'    => 'hjewiopchxnpw0ewfhjwe-dewiod',
-            'notify_url' => 'http://test.com',
-            'app_id'     => '2894723979'
-        ];
-
-        $pay->payJSApi($params);
+        $pay->payJSApi($this->post_params);
     }
 
     /**
@@ -101,12 +103,6 @@ class PayJSApiTest extends TestCase
         $pay = Mockery::mock(AllInPay::class, $config)->makePartial();
         $pay->allows()->getHttpClient()->andReturn($client);
 
-        $params = [
-            'open_id'    => 'hjewiopchxnpw0ewfhjwe-dewiod',
-            'notify_url' => 'http://test.com',
-            'app_id'     => '2894723979'
-        ];
-
-        $this->assertSame(['success' => true], $pay->payJSApi($params));
+        $this->assertSame(['success' => true], $pay->payJSApi($this->post_params));
     }
 }

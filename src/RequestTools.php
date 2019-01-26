@@ -76,4 +76,24 @@ class RequestTools
             }
         }
     }
+
+    /**
+     * 转换不符合命名规范的参数名称
+     * @param array $trans_key_vale
+     * @param array $params
+     * @return array
+     * @author yuzhihao <yu@wowphp.com>
+     * @since 2019-01-26
+     */
+    public static function translateParams(array $trans_key_vale, array $params)
+    {
+        foreach ($trans_key_vale as $key => $item) {
+            if (isset($params[$key])) {
+                $params[$item] = $params[$key];
+                unset($params[$key]);
+            }
+        }
+
+        return $params;
+    }
 }

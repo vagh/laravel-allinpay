@@ -1,4 +1,4 @@
-<h1 align="center"> laravel-allinpay </h1>
+<h1 align="center"> Laravel-AllInPay </h1>
 
 <p align="center">针对 <a href="http://www.allinpay.com/">通联支付</a> 接口定制的适用于 Laravel 框架的 SDK</p>
 
@@ -51,6 +51,21 @@ try {
     var_dump($e->getMessage());
 }
 ```
+
+#### 统一支付接口(微信 JS SDK)
+
+具体参数详情请参考通联支付的官方文档
+
+| 参数  | 说明 | 必传 |
+| ------------- | ------------- | ------------- |
+| open_id  | 对应微信支付的发起用户ID  | 是 |
+| notify_url | 支付回调地址  | 是 |
+| app_id | 微信对应的 AppID | 是 |
+| amount | 需要支付的金额 单位：分 | 是 |
+| out_trade_no | 商户订单号 | 是 |
+| valid_time | 订单有效时间 | 否 |
+| true_name | 付款人真实姓名 | 否 |
+| id_card_no | 证件号 | 否 |
 
 ## Contributing
 
