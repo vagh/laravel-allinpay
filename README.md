@@ -38,6 +38,7 @@ $config = [
 
 $pay = new AllInPay($config);
 
+// 测试统一下单(JS SDK)
 try {
 
     $params = [
@@ -51,7 +52,33 @@ try {
     $result = $pay->payJSApi($params);
 
     var_dump($result);
-    exit;
+
+} catch (Exception $e) {
+
+    if ($e instanceof InvalidArgumentException) {
+        $messgae = '参数异常：' . $e->getMessage();
+    }
+    if ($e instanceof HttpException) {
+        $messgae = '通信异常：' . $e->getMessage();
+    }
+    if ($e instanceof ServiceException) {
+        $messgae = '业务逻辑异常：' . $e->getMessage();
+    }
+    
+    var_dump($messgae);
+}
+
+// 测试退款
+try {
+    $params = [
+        'amount'           => '10',
+        'order_history_id' => 'CJXEWIOJOIDUXOUWOEICXNUWEO',
+        'out_trade_no'     => 'oTod4wA_AgM40UV2uQ9KJ-sgGmgU',
+    ];
+
+    $result = $pay->refundPay($params);
+
+    var_dump($result);
 
 } catch (Exception $e) {
 
@@ -71,7 +98,7 @@ try {
 
 #### 统一支付接口(微信 JS SDK)
 
-具体参数详情请参考通联支付的官方文档
+**具体参数详情请以及接口返回值请参考通联支付的官方文档**
 
 | 参数  | 说明 | 必传 |
 | ------------- | ------------- | ------------- |
@@ -83,6 +110,17 @@ try {
 | valid_time | 订单有效时间 | 否 |
 | true_name | 付款人真实姓名 | 否 |
 | id_card_no | 证件号 | 否 |
+
+#### 退款接口
+
+**具体参数详情请以及接口返回值请参考通联支付的官方文档**
+
+| 参数  | 说明 | 必传 |
+| ------------- | ------------- | ------------- |
+| open_id  | 对应微信支付的发起用户ID  | 是 |
+| amount | 需要支付的金额 单位：分 | 是 |
+| out_trade_no | 商户订单号 | 是 |
+| remark | 备注信息 最多25字 | 否 |
 
 ## Contributing
 

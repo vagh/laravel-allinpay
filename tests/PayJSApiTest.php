@@ -28,6 +28,7 @@ class PayJSApiTest extends TestCase
      * @throws HttpException
      * @throws InvalidArgumentException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Vagh\LaravelAllInPay\Exceptions\ServiceException
      */
     public function testGetPayJSApiWithInvalidConfig()
     {
@@ -93,7 +94,7 @@ class PayJSApiTest extends TestCase
             'is_test'     => true
         ];
 
-        $response = new Response(200, [], '{"success": true}');
+        $response = new Response(200, [], '{"retcode": "SUCCESS", "trxid" : "JCPEWOJOPXMKOPWKXCLPE"}');
         $client = Mockery::mock(Client::class);
 
         $client->allows()
@@ -103,6 +104,9 @@ class PayJSApiTest extends TestCase
         $pay = Mockery::mock(AllInPay::class, $config)->makePartial();
         $pay->allows()->getHttpClient()->andReturn($client);
 
-        $this->assertSame(['success' => true], $pay->payJSApi($this->post_params));
+        $this->assertSame([
+            'retcode' => 'SUCCESS',
+            'trxid'   => 'JCPEWOJOPXMKOPWKXCLPE'
+        ], $pay->payJSApi($this->post_params));
     }
 }
