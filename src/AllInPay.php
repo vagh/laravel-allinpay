@@ -4,8 +4,10 @@ namespace Vagh\LaravelAllInPay;
 
 use GuzzleHttp\Client;
 use Exception;
+use GuzzleHttp\Exception\ServerException;
 use Vagh\LaravelAllInPay\Exceptions\HttpException;
 use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
+use Vagh\LaravelAllInPay\Exceptions\ServiceException;
 
 class AllInPay
 {
@@ -41,6 +43,7 @@ class AllInPay
      * @since 2019-01-25
      * @throws HttpException
      * @throws InvalidArgumentException
+     * @throws ServiceException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function payJSApi($params)
@@ -76,7 +79,13 @@ class AllInPay
             $api_url = self::PAY_API_URL;
         }
 
-        return $this->requestApi($api_url, $params);
+        $response = $this->requestApi($api_url, $params);
+
+        if ($response['retcode'] === 'FAIL') {
+            throw new ServiceException($response['retmsg'], 7401);
+        }
+
+        return $response;
     }
 
     /**
@@ -87,6 +96,7 @@ class AllInPay
      * @since 2019-01-26
      * @throws HttpException
      * @throws InvalidArgumentException
+     * @throws ServiceException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function refundPay($params)
@@ -114,7 +124,13 @@ class AllInPay
             $api_url = self::REFUND_PAY_API_URL;
         }
 
-        return $this->requestApi($api_url, $params);
+        $response = $this->requestApi($api_url, $params);
+
+        if ($response['retcode'] === 'FAIL') {
+            throw new ServiceException($response['retmsg'], 7401);
+        }
+
+        return $response;
     }
 
 

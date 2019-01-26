@@ -22,10 +22,12 @@ TODO
 
 ```php
 <?php
-
 require __DIR__ . '/vendor/autoload.php';
 
 use Vagh\LaravelAllInPay\AllInPay;
+use Vagh\LaravelAllInPay\Exceptions\HttpException;
+use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
+use Vagh\LaravelAllInPay\Exceptions\ServiceException;
 
 $config = [
     'app_id'      => '00000051',
@@ -37,8 +39,9 @@ $config = [
 $pay = new AllInPay($config);
 
 try {
+
     $params = [
-        'trxamt'       => '10',
+        'amount'       => '10',
         'out_trade_no' => 'CJXEWIOJOIDUXOUWOEICXNUWEO',
         'open_id'      => 'oTod4wA_AgM40UV2uQ9KJ-sgGmgU',
         'notify_url'   => 'http://test.com',
@@ -47,8 +50,22 @@ try {
 
     $result = $pay->payJSApi($params);
 
+    var_dump($result);
+    exit;
+
 } catch (Exception $e) {
-    var_dump($e->getMessage());
+
+    if ($e instanceof InvalidArgumentException) {
+        $messgae = '参数异常：' . $e->getMessage();
+    }
+    if ($e instanceof HttpException) {
+        $messgae = '通信异常：' . $e->getMessage();
+    }
+    if ($e instanceof ServiceException) {
+        $messgae = '业务逻辑异常：' . $e->getMessage();
+    }
+
+    var_dump($messgae);
 }
 ```
 
