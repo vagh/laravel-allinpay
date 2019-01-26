@@ -4,7 +4,6 @@ namespace Vagh\LaravelAllInPay;
 
 use GuzzleHttp\Client;
 use Exception;
-use GuzzleHttp\Exception\ServerException;
 use Vagh\LaravelAllInPay\Exceptions\HttpException;
 use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
 use Vagh\LaravelAllInPay\Exceptions\ServiceException;

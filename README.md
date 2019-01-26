@@ -12,13 +12,41 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ## Usage
 
-在 Laravel 环境中这样使用：
+### 在 Laravel 环境中这样使用：
 
-```bash
-TODO
+在 Laravel 中使用也是同样的安装方式，配置写在 `config/services.php` 中：
+
+```php
+'tongLianPay' => [
+    'config' => [
+        'app_id'      => env('TONGLIAN_APP_ID'),
+        'cus_id'      => env('TONGLIAN_CUS_ID'),
+        'app_version' => env('TONGLIAN_API_VERSION', 11),
+        'is_test'     => env('TONGLIAN_IS_TEST', true)
+    ]
+],
+```
+然后在 `.env` 中配置对应的配置项。
+
+可以用两种方式来获取 `Vagh\LaravelAllInPay\AllInPay` 实例：
+
+```php
+// 依赖注入
+public function edit(AllInPay $pay) 
+{
+    $params = []; // 请参照文档填写参数
+    $response = $pay->payJSApi($params);
+}
+
+// 服务名访问
+public function edit() 
+{
+    $params = []; // 请参照文档填写参数
+    $response = app('tongLianPay')->payJSApi($params);
+}
 ```
 
-不在 Laravel 环境下可以这样使用：
+### 不在 Laravel 环境下可以这样使用：
 
 ```php
 <?php

@@ -13,11 +13,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new AllInPay(config('services.tongLianPay.config'));
         });
 
-        $this->app->alias(AllInPay::class, 'TongLianPay');
+        $this->app->alias(AllInPay::class, 'tongLianPay');
     }
 
     public function provides()
     {
-        return [AllInPay::class, 'TongLianPay'];
+        return [AllInPay::class, 'tongLianPay'];
     }
 }
