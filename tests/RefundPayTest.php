@@ -32,10 +32,7 @@ class RefundPayTest extends TestCase
      * 测试错误参数
      * @author yuzhihao <yu@wowphp.com>
      * @since 2019-01-26
-     * @throws HttpException
      * @throws InvalidArgumentException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Vagh\LaravelAllInPay\Exceptions\ServiceException
      */
     public function testRefundPayWithInvalidConfig()
     {
@@ -46,14 +43,7 @@ class RefundPayTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Param Key:app_id MUST set or can\'t be empty.');
 
-        $pay = new AllInPay($this->api_config);
-
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('appid不存在');
-
-        $pay->refundPay($this->post_params);
-
-        $this->fail('Failed to assert getPayJSApi throw exception with invalid argument.');
+        new AllInPay($config);
     }
 
     /**
