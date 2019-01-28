@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the vagh/laravel-allinpay.
+ *
+ * (c) VAGH <yu@wowphp.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Vagh\LaravelAllInPay;
 
 use GuzzleHttp\Client;
@@ -11,18 +20,24 @@ use Vagh\LaravelAllInPay\Exceptions\ServiceException;
 class AllInPay
 {
     protected $config;
+
     protected $guzzleOptions = [];
+
     protected $is_test = false;
 
     const PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/pay';
+
     const TEST_PAY_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/pay';
 
     const REFUND_PAY_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/refund';
+
     const REFUND_PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/refund';
 
     /**
      * AllInPay constructor.
+     *
      * @param array $config
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array $config)
@@ -31,15 +46,20 @@ class AllInPay
         $this->checkConfig($config);
 
         $this->config = $config;
-        $this->is_test = !!!$config['is_test'];
+        $this->is_test = !(bool) $config['is_test'];
     }
 
     /**
-     * 微信 JS SDK 支付
+     * 微信 JS SDK 支付.
+     *
      * @param $params
+     *
      * @return mixed
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
+     *
      * @throws HttpException
      * @throws InvalidArgumentException
      * @throws ServiceException
@@ -53,19 +73,19 @@ class AllInPay
             'notify_url',
             'app_id',
             'amount',
-            'out_trade_no'
+            'out_trade_no',
         ];
 
         RequestTools::checkMustSetArgs($must_set, $params);
 
         // 转换不规则的命名
         $params_translate = [
-            'amount'       => 'trxamt',
+            'amount' => 'trxamt',
             'out_trade_no' => 'reqsn',
-            'valid_time'   => 'validtime',
-            'true_name'    => 'truename',
-            'id_card_no'   => 'idno',
-            'open_id'      => 'acct'
+            'valid_time' => 'validtime',
+            'true_name' => 'truename',
+            'id_card_no' => 'idno',
+            'open_id' => 'acct',
         ];
         $params = RequestTools::translateParams($params_translate, $params);
 
@@ -80,7 +100,7 @@ class AllInPay
 
         $response = $this->requestApi($api_url, $params);
 
-        if ($response['retcode'] === 'FAIL') {
+        if ('FAIL' === $response['retcode']) {
             throw new ServiceException($response['retmsg'], 7401);
         }
 
@@ -88,11 +108,16 @@ class AllInPay
     }
 
     /**
-     * 交易退款
+     * 交易退款.
+     *
      * @param $params
+     *
      * @return mixed
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-26
+     *
      * @throws HttpException
      * @throws InvalidArgumentException
      * @throws ServiceException
@@ -104,16 +129,16 @@ class AllInPay
         $must_set = [
             'order_history_id', // 原交易流水号(通联下单后接口返回的流水号)
             'amount', // 退款金额
-            'out_trade_no' // 商户订单号
+            'out_trade_no', // 商户订单号
         ];
 
         RequestTools::checkMustSetArgs($must_set, $params);
 
         // 转换不规则的命名
         $params_translate = [
-            'amount'           => 'trxamt',
-            'out_trade_no'     => 'reqsn',
-            'order_history_id' => 'oldtrxid'
+            'amount' => 'trxamt',
+            'out_trade_no' => 'reqsn',
+            'order_history_id' => 'oldtrxid',
         ];
         $params = RequestTools::translateParams($params_translate, $params);
 
@@ -125,13 +150,12 @@ class AllInPay
 
         $response = $this->requestApi($api_url, $params);
 
-        if ($response['retcode'] === 'FAIL') {
+        if ('FAIL' === $response['retcode']) {
             throw new ServiceException($response['retmsg'], 7401);
         }
 
         return $response;
     }
-
 
     public function getHttpClient()
     {
@@ -145,39 +169,48 @@ class AllInPay
 
     /**
      * 发送一个调用 Api Http 的请求
+     *
      * @param $url
      * @param $params
+     *
      * @return mixed
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
+     *
      * @throws HttpException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requestApi($url, $params)
     {
-        $params["cusid"] = $this->config['cus_id'];
-        $params["appid"] = $this->config['app_id'];
-        $params["version"] = $this->config['app_version'];
+        $params['cusid'] = $this->config['cus_id'];
+        $params['appid'] = $this->config['app_id'];
+        $params['version'] = $this->config['app_version'];
 
         // 计算签名
-        $params["sign"] = RequestTools::createSign($params, $this->config['app_id']);
+        $params['sign'] = RequestTools::createSign($params, $this->config['app_id']);
+
         try {
             $response = $this->getHttpClient()->request('POST', $url, [
-                'form_params' => $params
+                'form_params' => $params,
             ])->getBody()->getContents();
 
             return \json_decode($response, true);
-
         } catch (Exception $e) {
             throw new HttpException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     /**
-     * 检查必要的参数配置
+     * 检查必要的参数配置.
+     *
      * @param array $config
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
+     *
      * @throws InvalidArgumentException
      */
     private function checkConfig(array $config)
@@ -186,10 +219,9 @@ class AllInPay
             'app_id',
             'cus_id',
             'app_version',
-            'is_test'
+            'is_test',
         ];
 
         RequestTools::checkMustSetArgs($param_must_set, $config);
     }
-
 }

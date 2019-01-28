@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the vagh/laravel-allinpay.
+ *
+ * (c) VAGH <yu@wowphp.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Vagh\LaravelAllInPay\Tests;
 
 use GuzzleHttp\Client;
@@ -14,17 +23,20 @@ use Mockery;
 class PayJSApiTest extends TestCase
 {
     private $post_params = [
-        'open_id'      => 'XJIOWEJCOIEJWOCIJO',
-        'notify_url'   => 'http://test.com',
-        'app_id'       => '2894723979',
-        'amount'       => 300,
-        'out_trade_no' => 'XJKIOEWJXIOEJCOIJCOI'
+        'open_id' => 'XJIOWEJCOIEJWOCIJO',
+        'notify_url' => 'http://test.com',
+        'app_id' => '2894723979',
+        'amount' => 300,
+        'out_trade_no' => 'XJKIOEWJXIOEJCOIJCOI',
     ];
 
     /**
-     * 测试错误参数
+     * 测试错误参数.
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
+     *
      * @throws HttpException
      * @throws InvalidArgumentException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -33,9 +45,9 @@ class PayJSApiTest extends TestCase
     public function testGetPayJSApiWithInvalidConfig()
     {
         $config = [
-            'app_id'      => 'app_id',
-            'cus_id'      => 'CJW*(ECHJXS*(JXW)OSJKP',
-            'app_version' => NULL
+            'app_id' => 'app_id',
+            'cus_id' => 'CJW*(ECHJXS*(JXW)OSJKP',
+            'app_version' => null,
         ];
 
         $this->expectException(InvalidArgumentException::class);
@@ -51,17 +63,19 @@ class PayJSApiTest extends TestCase
     }
 
     /**
-     * 测试请求异常
+     * 测试请求异常.
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
      */
     public function testGetPayJSApiWithGuzzleRuntimeException()
     {
         $config = [
-            'app_id'      => 'app_id',
-            'cus_id'      => 'CJW*(ECHJXS*(JXW)OSJKP',
+            'app_id' => 'app_id',
+            'cus_id' => 'CJW*(ECHJXS*(JXW)OSJKP',
             'app_version' => '12',
-            'is_test'     => true
+            'is_test' => true,
         ];
 
         $client = Mockery::mock(Client::class);
@@ -82,16 +96,18 @@ class PayJSApiTest extends TestCase
 
     /**
      * 测试正常请求
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-25
      */
     public function testGetPayJSApi()
     {
         $config = [
-            'app_id'      => 'app_id',
-            'cus_id'      => 'CJW*(ECHJXS*(JXW)OSJKP',
+            'app_id' => 'app_id',
+            'cus_id' => 'CJW*(ECHJXS*(JXW)OSJKP',
             'app_version' => '12',
-            'is_test'     => true
+            'is_test' => true,
         ];
 
         $response = new Response(200, [], '{"retcode": "SUCCESS", "trxid" : "JCPEWOJOPXMKOPWKXCLPE"}');
@@ -106,7 +122,7 @@ class PayJSApiTest extends TestCase
 
         $this->assertSame([
             'retcode' => 'SUCCESS',
-            'trxid'   => 'JCPEWOJOPXMKOPWKXCLPE'
+            'trxid' => 'JCPEWOJOPXMKOPWKXCLPE',
         ], $pay->payJSApi($this->post_params));
     }
 }

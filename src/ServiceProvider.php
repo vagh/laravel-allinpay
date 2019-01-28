@@ -1,7 +1,15 @@
 <?php
 
-namespace Vagh\LaravelAllInPay;
+/*
+ * This file is part of the vagh/laravel-allinpay.
+ *
+ * (c) VAGH <yu@wowphp.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
 
+namespace Vagh\LaravelAllInPay;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -9,7 +17,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(AllInPay::class, function(){
+        $this->app->singleton(AllInPay::class, function () {
             return new AllInPay(config('services.tongLianPay.config'));
         });
 
