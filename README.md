@@ -3,6 +3,7 @@
 <p align="center">针对 <a href="http://www.allinpay.com/">通联支付</a> 接口定制的适用于 Laravel 框架的 SDK</p>
 
 [![Build Status](https://travis-ci.org/vagh/laravel-allinpay.svg?branch=master)](https://travis-ci.org/vagh/laravel-allinpay)
+![StyleCI build status](https://github.styleci.io/repos/167475909/shield) 
 
 ## Installing
 
