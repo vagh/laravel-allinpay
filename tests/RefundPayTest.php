@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the vagh/laravel-allinpay.
+ *
+ * (c) VAGH <yu@wowphp.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Vagh\LaravelAllInPay\Tests;
 
 use GuzzleHttp\Client;
@@ -10,35 +19,37 @@ use Vagh\LaravelAllInPay\Exceptions\HttpException;
 use Vagh\LaravelAllInPay\Exceptions\InvalidArgumentException;
 use Mockery\Matcher\AnyArgs;
 use Mockery;
-use Vagh\LaravelAllInPay\Exceptions\ServiceException;
 
 class RefundPayTest extends TestCase
 {
     protected $post_params = [
-        'app_id'           => '2894723979',
-        'amount'           => 300,
-        'out_trade_no'     => 'XJKIOEWJXIOEJCOIJCOI',
-        'order_history_id' => 'jIOPXJEWPOJCIXEOPJCP'
+        'app_id' => '2894723979',
+        'amount' => 300,
+        'out_trade_no' => 'XJKIOEWJXIOEJCOIJCOI',
+        'order_history_id' => 'jIOPXJEWPOJCIXEOPJCP',
     ];
 
     protected $api_config = [
-        'app_id'      => 'app_id',
-        'cus_id'      => 'CJW*(ECHJXS*(JXW)OSJKP',
+        'app_id' => 'app_id',
+        'cus_id' => 'CJW*(ECHJXS*(JXW)OSJKP',
         'app_version' => '12',
-        'is_test'     => true
+        'is_test' => true,
     ];
 
     /**
-     * 测试错误参数
+     * 测试错误参数.
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-26
+     *
      * @throws InvalidArgumentException
      */
     public function testRefundPayWithInvalidConfig()
     {
         $config = $this->api_config;
 
-        $config['app_id'] = NULL;
+        $config['app_id'] = null;
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Param Key:app_id MUST set or can\'t be empty.');
@@ -47,13 +58,14 @@ class RefundPayTest extends TestCase
     }
 
     /**
-     * 测试请求异常
+     * 测试请求异常.
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-26
      */
     public function testRefundPayWithGuzzleRuntimeException()
     {
-
         $client = Mockery::mock(Client::class);
 
         $client->allows()
@@ -72,7 +84,9 @@ class RefundPayTest extends TestCase
 
     /**
      * 测试正常请求
+     *
      * @author yuzhihao <yu@wowphp.com>
+     *
      * @since 2019-01-26
      */
     public function testRefundPay()
@@ -89,7 +103,7 @@ class RefundPayTest extends TestCase
 
         $this->assertSame([
             'retcode' => 'SUCCESS',
-            'trxid'   => 'JCPEWOJOPXMKOPWKXCLPE'
+            'trxid' => 'JCPEWOJOPXMKOPWKXCLPE',
         ], $pay->refundPay($this->post_params));
     }
 }
