@@ -220,7 +220,7 @@ class AllInPay
         $param_must_set = [
             'app_id',
             'cus_id',
-            'app_version'
+            'app_version',
         ];
 
         RequestTools::checkMustSetArgs($param_must_set, $config);
