@@ -46,7 +46,7 @@ class AllInPay
         $this->checkConfig($config);
 
         $this->config = $config;
-        $this->is_test = !(bool)$config['is_test'];
+        $this->is_test = $config['is_test'] ?: false;
     }
 
     /**
@@ -220,8 +220,7 @@ class AllInPay
         $param_must_set = [
             'app_id',
             'cus_id',
-            'app_version',
-            'is_test',
+            'app_version'
         ];
 
         RequestTools::checkMustSetArgs($param_must_set, $config);
