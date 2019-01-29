@@ -46,7 +46,7 @@ class AllInPay
         $this->checkConfig($config);
 
         $this->config = $config;
-        $this->is_test = !(bool)$config['is_test'];
+        $this->is_test = !(bool) $config['is_test'];
     }
 
     /**
