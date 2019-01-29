@@ -123,7 +123,7 @@ class PayJSApiTest extends TestCase
         $this->assertSame([
             'retcode' => 'SUCCESS',
             'trxid' => 'JCPEWOJOPXMKOPWKXCLPE',
-            'trxstatus' => '0000'
+            'trxstatus' => '0000',
         ], $pay->payJSApi($this->post_params));
     }
 }
