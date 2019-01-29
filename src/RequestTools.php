@@ -32,7 +32,7 @@ class RequestTools
         $params['key'] = $app_key;
         ksort($params);
         $blank_str = self::buildUrlParams($params);
-        $sign = md5($blank_str);
+        $sign = strtoupper(md5($blank_str));
 
         return $sign;
     }

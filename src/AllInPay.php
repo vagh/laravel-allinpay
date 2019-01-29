@@ -46,7 +46,7 @@ class AllInPay
         $this->checkConfig($config);
 
         $this->config = $config;
-        $this->is_test = !(bool) $config['is_test'];
+        $this->is_test = !(bool)$config['is_test'];
     }
 
     /**
@@ -86,6 +86,7 @@ class AllInPay
             'true_name' => 'truename',
             'id_card_no' => 'idno',
             'open_id' => 'acct',
+            'app_id' => 'sub_appid',
         ];
         $params = RequestTools::translateParams($params_translate, $params);
 
@@ -187,16 +188,17 @@ class AllInPay
         $params['cusid'] = $this->config['cus_id'];
         $params['appid'] = $this->config['app_id'];
         $params['version'] = $this->config['app_version'];
+        $params['randomstr'] = md5(uniqid(microtime(true), true));
 
         // 计算签名
-        $params['sign'] = RequestTools::createSign($params, $this->config['app_id']);
+        $params['sign'] = RequestTools::createSign($params, $this->config['app_key']);
 
         try {
             $response = $this->getHttpClient()->request('POST', $url, [
                 'form_params' => $params,
-            ])->getBody()->getContents();
+            ]);
 
-            return \json_decode($response, true);
+            return \json_decode($response->getBody()->getContents(), true);
         } catch (Exception $e) {
             throw new HttpException($e->getMessage(), $e->getCode(), $e);
         }
