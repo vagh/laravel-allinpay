@@ -105,7 +105,7 @@ class AllInPay
             throw new ServiceException($response['retmsg'], 7401);
         }
 
-        if ($response['trxstatus'] != '0000') {
+        if ('0000' != $response['trxstatus']) {
             throw new ServiceException($response['retmsg'], 7401);
         }
 
