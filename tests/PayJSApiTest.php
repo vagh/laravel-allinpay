@@ -110,7 +110,7 @@ class PayJSApiTest extends TestCase
             'is_test' => true,
         ];
 
-        $response = new Response(200, [], '{"retcode": "SUCCESS", "trxid" : "JCPEWOJOPXMKOPWKXCLPE"}');
+        $response = new Response(200, [], '{"retcode": "SUCCESS", "trxid" : "JCPEWOJOPXMKOPWKXCLPE", "trxstatus" : "0000"}');
         $client = Mockery::mock(Client::class);
 
         $client->allows()
@@ -123,6 +123,7 @@ class PayJSApiTest extends TestCase
         $this->assertSame([
             'retcode' => 'SUCCESS',
             'trxid' => 'JCPEWOJOPXMKOPWKXCLPE',
+            'trxstatus' => '0000'
         ], $pay->payJSApi($this->post_params));
     }
 }
