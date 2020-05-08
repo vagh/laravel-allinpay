@@ -19,12 +19,10 @@ $ composer require vagh/laravel-allinpay -vvv
 
 ```php
 'tongLianPay' => [
-    'config' => [
-        'app_id'      => env('TONGLIAN_APP_ID'),
-        'cus_id'      => env('TONGLIAN_CUS_ID'),
-        'app_version' => env('TONGLIAN_API_VERSION', 11),
-        'is_test'     => env('TONGLIAN_IS_TEST', true)
-    ]
+    'app_id'      => env('TONGLIAN_APP_ID'),
+    'cus_id'      => env('TONGLIAN_CUS_ID'),
+    'app_version' => env('TONGLIAN_API_VERSION', 11),
+    'is_test'     => env('TONGLIAN_IS_TEST', true)
 ],
 ```
 然后在 `.env` 中配置对应的配置项。
