@@ -31,6 +31,10 @@ class AllInPay
     const REFUND_PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/refund';
     const PAY_QRCODE_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/scanqrpay';
     const PAY_QRCODE_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/scanqrpay';
+    const QUERY_ORDER_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/query';
+    const QUERY_ORDER_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/query';
+    const CANCEL_ORDER_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/cancel';
+    const CANCEL_ORDER_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/cancel';
 
     /**
      * AllInPay constructor.
@@ -151,6 +155,91 @@ class AllInPay
             $api_url = self::PAY_QRCODE_TEST_API_URL;
         } else {
             $api_url = self::PAY_QRCODE_API_URL;
+        }
+
+        $response = $this->requestApi($api_url, $params);
+
+        if ('FAIL' === $response['retcode']) {
+            throw new ServiceException($response['retmsg'], $response['retcode']);
+        }
+
+        return $response;
+    }
+
+    /**
+     * 查询订单支付状态
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@vagh.cn>
+     * @since 2020/5/8
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws ServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function queryOrder($params)
+    {
+        // 验证必传参数
+        $must_set = [
+            'out_trade_no',
+        ];
+
+        RequestTools::checkMustSetArgs($must_set, $params);
+
+        // 转换不规则的命名
+        $params_translate = [
+            'out_trade_no' => 'reqsn',
+            'payment_no' => 'trxid' // 支付的收银宝平台流水
+        ];
+        $params = RequestTools::translateParams($params_translate, $params);
+
+        if ($this->is_test) {
+            $api_url = self::QUERY_ORDER_TEST_API_URL;
+        } else {
+            $api_url = self::QUERY_ORDER_API_URL;
+        }
+
+        $response = $this->requestApi($api_url, $params);
+
+        if ('FAIL' === $response['retcode']) {
+            throw new ServiceException($response['retmsg'], $response['retcode']);
+        }
+
+        return $response;
+    }
+
+    /**
+     * 撤销支付单
+     * 只能撤销当天的交易，全额退款，实时返回退款结果
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@vagh.cn>
+     * @since 2020/5/8
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws ServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function cancelOrder($params)
+    {
+        // 验证必传参数
+        $must_set = [
+            'out_trade_no',
+        ];
+
+        RequestTools::checkMustSetArgs($must_set, $params);
+
+        // 转换不规则的命名
+        $params_translate = [
+            'out_trade_no' => 'oldreqsn',
+            'payment_no' => 'oldtrxid' // 支付的收银宝平台流水
+        ];
+        $params = RequestTools::translateParams($params_translate, $params);
+
+        if ($this->is_test) {
+            $api_url = self::QUERY_ORDER_TEST_API_URL;
+        } else {
+            $api_url = self::QUERY_ORDER_API_URL;
         }
 
         $response = $this->requestApi($api_url, $params);
