@@ -26,12 +26,11 @@ class AllInPay
     protected $is_test = false;
 
     const PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/pay';
-
     const TEST_PAY_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/pay';
-
     const REFUND_PAY_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/refund';
-
     const REFUND_PAY_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/refund';
+    const PAY_QRCODE_TEST_API_URL = 'https://test.allinpaygd.com/apiweb/unitorder/scanqrpay';
+    const PAY_QRCODE_API_URL = 'https://vsp.allinpay.com/apiweb/unitorder/scanqrpay';
 
     /**
      * AllInPay constructor.
@@ -107,6 +106,57 @@ class AllInPay
 
         if ('0000' != $response['trxstatus']) {
             throw new ServiceException($response['errmsg'], 7401);
+        }
+
+        return $response;
+    }
+
+    /**
+     * 付款码支付
+     * @param $params
+     * @return mixed
+     * @author yuzhihao <yu@vagh.cn>
+     * @since 2020/5/8
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws ServiceException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function scanQrPay($params)
+    {
+        // 验证必传参数
+        $must_set = [
+            'auth_code',
+            'amount',
+            'out_trade_no',
+            'order_title',
+            'remark'
+        ];
+
+        RequestTools::checkMustSetArgs($must_set, $params);
+
+        // 转换不规则的命名
+        $params_translate = [
+            'amount' => 'trxamt',
+            'out_trade_no' => 'reqsn',
+            'true_name' => 'truename',
+            'id_card_no' => 'idno',
+            'auth_code' => 'authcode',
+            'order_title' => 'body',
+            'remark' => 'remark'
+        ];
+        $params = RequestTools::translateParams($params_translate, $params);
+
+        if ($this->is_test) {
+            $api_url = self::PAY_QRCODE_TEST_API_URL;
+        } else {
+            $api_url = self::PAY_QRCODE_API_URL;
+        }
+
+        $response = $this->requestApi($api_url, $params);
+
+        if ('FAIL' === $response['retcode']) {
+            throw new ServiceException($response['retmsg'], $response['retcode']);
         }
 
         return $response;
