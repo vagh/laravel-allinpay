@@ -160,7 +160,7 @@ class AllInPay
         $response = $this->requestApi($api_url, $params);
 
         if ('FAIL' === $response['retcode']) {
-            throw new ServiceException($response['retmsg'], $response['retcode']);
+            throw new ServiceException($response['retmsg'], 7401);
         }
 
         return $response;
@@ -202,7 +202,7 @@ class AllInPay
         $response = $this->requestApi($api_url, $params);
 
         if ('FAIL' === $response['retcode']) {
-            throw new ServiceException($response['retmsg'], $response['retcode']);
+            throw new ServiceException($response['retmsg'], 7401);
         }
 
         return $response;
@@ -245,7 +245,7 @@ class AllInPay
         $response = $this->requestApi($api_url, $params);
 
         if ('FAIL' === $response['retcode']) {
-            throw new ServiceException($response['retmsg'], $response['retcode']);
+            throw new ServiceException($response['retmsg'], 7401);
         }
 
         return $response;
