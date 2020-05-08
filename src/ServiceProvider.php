@@ -18,7 +18,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
         $this->app->singleton(AllInPay::class, function () {
-            return new AllInPay(config('services.tongLianPay.config'));
+            return new AllInPay(config('services.tongLianPay'));
         });
 
         $this->app->alias(AllInPay::class, 'tongLianPay');
