@@ -231,17 +231,20 @@ class AllInPay
 
         // 转换不规则的命名
         $params_translate = [
-            'out_trade_no' => 'reqsn',
-            'payment_no' => 'trxid' // 支付的收银宝平台流水
+            'out_trade_no' => 'oldreqsn',
+            'cancel_no' => 'reqsn',
+            'cancel_amount' => 'trxamt',
+            'payment_no' => 'oldtrxid' // 支付的收银宝平台流水
         ];
+        
         $params = RequestTools::translateParams($params_translate, $params);
-
+        
         if ($this->is_test) {
-            $api_url = self::QUERY_ORDER_TEST_API_URL;
+            $api_url = self::CANCEL_ORDER_TEST_API_URL;
         } else {
-            $api_url = self::QUERY_ORDER_API_URL;
+            $api_url = self::CANCEL_ORDER_API_URL;
         }
-
+        
         $response = $this->requestApi($api_url, $params);
 
         if ('FAIL' === $response['retcode']) {
